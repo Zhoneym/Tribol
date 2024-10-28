@@ -151,7 +151,7 @@ int runExample(int num_elems_1d)
       break;
 #endif
 #ifdef TRIBOL_USE_HIP
-    case tribol::MemorySpace::Hip:
+    case tribol::MemorySpace::Device:
       device.Configure("hip");
       break;
 #endif

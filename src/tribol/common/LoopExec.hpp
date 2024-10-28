@@ -72,7 +72,7 @@ namespace detail
   void forAllImpl(forAllType<ExecutionMode::Sequential>, IndexT N, BODY&& body)
   {
 #ifdef TRIBOL_USE_RAJA
-    RAJA::forall<RAJA::loop_exec>(RAJA::RangeSegment(0, N), std::move(body));
+    RAJA::forall<RAJA::seq_exec>(RAJA::TypedRangeSegment<IndexT>(0, N), std::move(body));
 #else
     for (IndexT i{0}; i < N; ++i)
     {
@@ -85,13 +85,13 @@ namespace detail
   template <typename BODY, bool ASYNC, int BLOCK_SIZE>
   typename std::enable_if_t<ASYNC> forAllCudaImpl(IndexT N, BODY&& body)
   {
-    RAJA::forall<RAJA::cuda_exec_async<BLOCK_SIZE>>(RAJA::RangeSegment(0, N), std::move(body));
+    RAJA::forall<RAJA::cuda_exec_async<BLOCK_SIZE>>(RAJA::TypedRangeSegment<IndexT>(0, N), std::move(body));
   }
 
   template <typename BODY, bool ASYNC, int BLOCK_SIZE>
   typename std::enable_if_t<!ASYNC> forAllCudaImpl(IndexT N, BODY&& body)
   {
-    RAJA::forall<RAJA::cuda_exec<BLOCK_SIZE>>(RAJA::RangeSegment(0, N), std::move(body));
+    RAJA::forall<RAJA::cuda_exec<BLOCK_SIZE>>(RAJA::TypedRangeSegment<IndexT>(0, N), std::move(body));
   }
 
   template <typename BODY, bool ASYNC, int BLOCK_SIZE>
@@ -105,13 +105,13 @@ namespace detail
   template <typename BODY, bool ASYNC, int BLOCK_SIZE>
   typename std::enable_if_t<ASYNC> forAllHipImpl(IndexT N, BODY&& body)
   {
-    RAJA::forall<RAJA::hip_exec_async<BLOCK_SIZE>>(RAJA::RangeSegment(0, N), std::move(body));
+    RAJA::forall<RAJA::hip_exec_async<BLOCK_SIZE>>(RAJA::TypedRangeSegment<IndexT>(0, N), std::move(body));
   }
 
   template <typename BODY, bool ASYNC, int BLOCK_SIZE>
   typename std::enable_if_t<!ASYNC> forAllHipImpl(IndexT N, BODY&& body)
   {
-    RAJA::forall<RAJA::hip_exec<BLOCK_SIZE>>(RAJA::RangeSegment(0, N), std::move(body));
+    RAJA::forall<RAJA::hip_exec<BLOCK_SIZE>>(RAJA::TypedRangeSegment<IndexT>(0, N), std::move(body));
   }
 
   template <typename BODY, bool ASYNC, int BLOCK_SIZE>
@@ -125,7 +125,7 @@ namespace detail
   template <typename BODY, bool ASYNC, int BLOCK_SIZE>
   void forAllImpl(forAllType<ExecutionMode::OpenMP>, IndexT N, BODY&& body)
   {
-    RAJA::forall<RAJA::omp_parallel_for_exec>(RAJA::RangeSegment(0, N), std::move(body));
+    RAJA::forall<RAJA::omp_parallel_for_exec>(RAJA::TypedRangeSegment<IndexT>(0, N), std::move(body));
   }
 #endif
 }
