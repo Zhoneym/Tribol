@@ -234,7 +234,7 @@ class Tribol(CachedCMakePackage, CudaPackage, ROCmPackage):
 
             entries.append(cmake_cache_option("ENABLE_HIP", True))
 
-            rocm_root = os.path.dirname(spec["hip"].prefix)
+            rocm_root = spec["hip"].prefix
             entries.append(cmake_cache_path("ROCM_PATH", rocm_root))
 
             hip_link_flags = ""
