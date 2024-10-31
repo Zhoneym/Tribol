@@ -492,6 +492,13 @@ public:
    * @param [in] pred True to indicate binning has occurred 
    */
   void setBinned(bool pred) { m_isBinned = pred; }
+  
+  /**
+   * @brief Set the stored mesh pointers based on the two mesh IDs provided
+   * 
+   * @return True if meshes are registered; false otherwise
+   */
+  bool setMeshPointers();
 
   /**
    * @brief Returns true if a valid coupling scheme, otherwise false
@@ -499,13 +506,6 @@ public:
    * @return bool indicating if coupling scheme is valid
    */
   bool isValidCouplingScheme();
-
-  /**
-   * @brief Returns true if one or both meshes are zero-element, null meshes 
-   *
-   * @return true if one or both null meshes in coupling scheme
-   */
-  bool nullMeshes() { return m_nullMeshes; }
 
   /**
    * @brief Returns true if one or both meshes are zero-element, null meshes 

@@ -418,10 +418,8 @@ const ContactPlane& CouplingScheme::getContactPlane( IndexT id ) const
 }
 
 //------------------------------------------------------------------------------
-bool CouplingScheme::isValidCouplingScheme()
+bool CouplingScheme::setMeshPointers()
 {
-   bool valid {true};
-
    // verify meshes exist and set pointers to meshes
    MeshManager & meshManager = MeshManager::getInstance(); 
    if (!meshManager.findData(this->m_mesh_id1) || !meshManager.findData(this->m_mesh_id2))
@@ -432,6 +430,19 @@ bool CouplingScheme::isValidCouplingScheme()
 
    this->m_mesh1 = &MeshManager::getInstance().at( this->m_mesh_id1 );
    this->m_mesh2 = &MeshManager::getInstance().at( this->m_mesh_id2 );
+
+   return true;
+}
+
+//------------------------------------------------------------------------------
+bool CouplingScheme::isValidCouplingScheme()
+{
+   bool valid {true};
+
+   if (!setMeshPointers())
+   {
+      return false;
+   }
 
    // set boolean for null meshes
    this->m_nullMeshes = this->m_mesh1->numberOfElements() <= 0 || this->m_mesh2->numberOfElements() <= 0;
@@ -968,6 +979,7 @@ int CouplingScheme::checkExecutionModeData()
     this->m_couplingSchemeErrors.cs_execution_mode_error = 
       ExecutionModeError::NON_MATCHING_MEMORY_SPACE;
     err = 1;
+    return err;
   }
 
   switch (this->m_mesh1->getMemorySpace())
@@ -1056,14 +1068,16 @@ int CouplingScheme::checkExecutionModeData()
     case MemorySpace::Device:
       switch (this->m_given_exec_mode)
       {
-  #ifdef TRIBOL_USE_CUDA
+  #if defined(TRIBOL_USE_CUDA) || defined(TRIBOL_USE_HIP)
+    #ifdef TRIBOL_USE_CUDA
         case ExecutionMode::Cuda:
-  #endif
-  #ifdef TRIBOL_USE_HIP
+    #endif
+    #ifdef TRIBOL_USE_HIP
         case ExecutionMode::Hip:
-  #endif
+    #endif
           this->m_exec_mode = this->m_given_exec_mode;
           break;
+  #endif
         case ExecutionMode::Dynamic:
   #if defined(TRIBOL_USE_CUDA)
           this->m_exec_mode = ExecutionMode::Cuda;
@@ -1074,7 +1088,6 @@ int CouplingScheme::checkExecutionModeData()
   #endif
         default:
           SLIC_ERROR_ROOT("Unknown execution mode for device memory. "
-            "Tribol not built with CUDA/HIP support. "
             "Unable to determine execution mode.");
           this->m_couplingSchemeErrors.cs_execution_mode_error = 
             ExecutionModeError::BAD_MODE_FOR_MEMORY_SPACE;
