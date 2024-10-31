@@ -3,6 +3,8 @@
 //
 // SPDX-License-Identifier: (MIT)
 
+#include <iostream>
+
 #include <gtest/gtest.h>
 
 #include "tribol/interface/tribol.hpp"
@@ -28,8 +30,63 @@ class ExecutionModeTest : public testing::TestWithParam<std::tuple<MemorySpace, 
 protected:
   ExecutionMode returned_mode_;
 
+  void PrintMemorySpace(MemorySpace space) const
+  {
+    switch (space)
+    {
+      case MemorySpace::Dynamic:
+        std::cout << "Dynamic";
+        break;
+      case MemorySpace::Host:
+        std::cout << "Host";
+        break;
+#ifdef TRIBOL_USE_UMPIRE
+      case MemorySpace::Device:
+        std::cout << "Device";
+        break;
+      case MemorySpace::Unified:
+        std::cout << "Unified";
+        break;
+#endif
+    }
+  }
+
+  void PrintExecutionMode(ExecutionMode mode) const
+  {
+    switch (mode)
+    {
+      case ExecutionMode::Sequential:
+        std::cout << "Sequential";
+        break;
+#ifdef TRIBOL_USE_OPENMP
+      case ExecutionMode::OpenMP:
+        std::cout << "OpenMP";
+        break;
+#endif
+#ifdef TRIBOL_USE_CUDA
+      case ExecutionMode::Cuda:
+        std::cout << "Cuda";
+        break;
+#endif
+#ifdef TRIBOL_USE_HIP
+      case ExecutionMode::Hip:
+        std::cout << "Hip";
+        break;
+#endif
+      case ExecutionMode::Dynamic:
+        std::cout << "Dynamic";
+        break;
+    }
+  }
+
   void SetUp() override
   {
+    std::cout << "Memory space: ";
+    PrintMemorySpace(std::get<0>(GetParam()));
+    std::cout << "  Given: ";
+    PrintExecutionMode(std::get<1>(GetParam()));
+    std::cout << "  Expected: ";
+    PrintExecutionMode(std::get<2>(GetParam()));
     constexpr IndexT cs_id = 0;
     constexpr IndexT mesh_id = 0;
     registerMesh(mesh_id, 0, 0, nullptr, InterfaceElementType::LINEAR_QUAD,
@@ -47,6 +104,9 @@ protected:
     cs.setMeshPointers();
     cs.checkExecutionModeData();
     returned_mode_ = cs.getExecutionMode();
+    std::cout << "  Deduced: ";
+    PrintExecutionMode(returned_mode_);
+    std::cout << std::endl;
   }
 };
 
@@ -102,6 +162,7 @@ INSTANTIATE_TEST_SUITE_P(tribol, ExecutionModeTest, testing::Values(
 #ifdef TRIBOL_USE_OPENMP
   // error: , std::make_tuple(tribol::MemorySpace::Device, tribol::ExecutionMode::OpenMP, tribol::ExecutionMode::Sequential)
 #endif
+#if defined(TRIBOL_USE_HIP) || defined(TRIBOL_USE_CUDA)
   , std::make_tuple(tribol::MemorySpace::Unified, tribol::ExecutionMode::Sequential, tribol::ExecutionMode::Sequential)
 #if defined(TRIBOL_USE_CUDA)
   , std::make_tuple(tribol::MemorySpace::Unified, tribol::ExecutionMode::Dynamic, tribol::ExecutionMode::Cuda)
@@ -120,6 +181,7 @@ INSTANTIATE_TEST_SUITE_P(tribol, ExecutionModeTest, testing::Values(
 #endif
 #ifdef TRIBOL_USE_OPENMP
   , std::make_tuple(tribol::MemorySpace::Unified, tribol::ExecutionMode::OpenMP, tribol::ExecutionMode::OpenMP)
+#endif
 #endif
 #endif
 ));
