@@ -30,7 +30,7 @@ namespace tribol
  */
 TRIBOL_HOST_DEVICE bool geomFilter( IndexT element_id1, IndexT element_id2,
                                     const MeshData::Viewer& mesh1, const MeshData::Viewer& mesh2,
-                                    ContactMode mode )
+                                    ContactMode mode, bool auto_contact_check )
 {
   /// CHECK #1: Check to make sure the two face ids are not the same 
   ///           and the two mesh ids are not the same.
@@ -41,10 +41,16 @@ TRIBOL_HOST_DEVICE bool geomFilter( IndexT element_id1, IndexT element_id2,
 
   int dim = mesh1.spatialDimension();
 
-  /// CHECK #2: Check to make sure faces don't share a common 
-  ///           node for the case where meshId1 = meshId2. 
-  ///           We want to preclude two adjacent faces from interacting.
-  if (mesh1.meshId() == mesh2.meshId()) 
+  /// CHECK #2: Auto-contact precludes faces that share a common
+  ///           node(s). We want to preclude two adjacent faces from interacting 
+  //            due to problematic configurations, such as corners where the
+  //            configuration and opposing normals appear to be in contact, but 
+  //            are not.
+  //
+  //            Note: non-auto-contact coupling schemes should typically be amongst
+  //                  topologically disconnected surfaces unless it is known apriori that
+  //                  face-pairs with shared nodes can in fact contact.
+  if (auto_contact_check)
   {
     for (IndexT i{0}; i < mesh1.numberOfNodesPerElement(); ++i)
     {
@@ -228,10 +234,12 @@ public:
 
     ContactMode cmode = m_coupling_scheme->getContactMode();
 
+    bool auto_contact_check = m_coupling_scheme->getParameters().auto_contact_check;
+
     // count how many pairs are proximate
     forAllExec(m_coupling_scheme->getExecutionMode(), maxNumPairs,
       [mesh1NumElems, mesh2NumElems, is_symm, isProximate, mesh1, mesh2, cmode, 
-        pCount] TRIBOL_HOST_DEVICE (IndexT i)
+        pCount, auto_contact_check] TRIBOL_HOST_DEVICE (IndexT i)
       {
         IndexT fromIdx = i / mesh1NumElems;
         IndexT toIdx = i % mesh2NumElems;
@@ -244,7 +252,7 @@ public:
         }
         isProximate[i] = geomFilter( fromIdx, toIdx, 
                                     mesh1, mesh2,
-                                    cmode );
+                                    cmode, auto_contact_check );
 #ifdef TRIBOL_USE_RAJA
         RAJA::atomicAdd<RAJA::auto_atomic>(pCount, static_cast<int>(isProximate[i]));
 #else
@@ -462,7 +470,8 @@ public:
         // Preliminary geometry/proximity checks, SRW
         bool contact = geomFilter( fromIdx, toIdx,
                                    mesh1, mesh2,
-                                   m_coupling_scheme->getContactMode() );
+                                   m_coupling_scheme->getContactMode(),
+                                   m_coupling_scheme->getParameters().auto_contact_check );
 
         if (contact)
         {
@@ -612,14 +621,15 @@ public:
     const auto mesh1 = m_coupling_scheme->getMesh1().getView();
     const auto mesh2 = m_coupling_scheme->getMesh2().getView();
     auto cmode = m_coupling_scheme->getContactMode();
+    bool auto_contact_check = m_coupling_scheme->getParameters().auto_contact_check;
     // count the number of filtered proximate pairs
     forAllExec(m_coupling_scheme->getExecutionMode(), m_candidates.size(),
       [mesh1, mesh2, offsets_view, counts_view, candidates_view, 
-        filtered_candidates, cmode] TRIBOL_HOST_DEVICE (IndexT i) 
+        filtered_candidates, cmode, auto_contact_check] TRIBOL_HOST_DEVICE (IndexT i) 
       {
         auto mesh1_elem = algorithm::binarySearch(offsets_view, counts_view, i);
         auto mesh2_elem = candidates_view[i];
-        if (geomFilter(mesh1_elem, mesh2_elem, mesh1, mesh2, cmode))
+        if (geomFilter(mesh1_elem, mesh2_elem, mesh1, mesh2, cmode, auto_contact_check))
         {
 #ifdef TRIBOL_USE_RAJA
           RAJA::atomicInc<AtomicPolicy>(filtered_candidates.data());

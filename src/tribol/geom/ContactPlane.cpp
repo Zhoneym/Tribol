@@ -324,7 +324,7 @@ TRIBOL_HOST_DEVICE bool ExceedsMaxAutoInterpen( const MeshData::Viewer& mesh1,
                                                 const Parameters& params,
                                                 const RealT gap )
 {
-   if (params.auto_interpen_check)
+   if (params.auto_contact_check)
    {
       RealT max_interpen = -1. * params.auto_contact_pen_frac * 
                       axom::utilities::min( mesh1.getElementData().m_thickness[ faceId1 ],

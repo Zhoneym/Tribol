@@ -921,7 +921,7 @@ void setInterfacePairs( IndexT cs_id,
       // to interface pair manager. Note, further computational geometry 
       // filtering will be performed on each face-pair indendifying 
       // contact candidates.
-      if (geomFilter( pairIndex1[i], pairIndex2[i], mesh1, mesh2, mode ))
+      if (geomFilter( pairIndex1[i], pairIndex2[i], mesh1, mesh2, mode, cs->getParameters().auto_contact_check ))
       {
         pairs.emplace_back(pairIndex1[i], pairIndex2[i], true);
       }
