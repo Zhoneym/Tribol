@@ -339,11 +339,11 @@ spack:
       - spec: curl@7.61.1
         prefix: /usr
     cmake:
-      version: [3.29.2]
+      version: [3.24.2]
       buildable: false
       externals:
-      - spec: cmake@3.29.2
-        prefix: /usr/tce/packages/cmake/cmake-3.29.2
+      - spec: cmake@3.24.2
+        prefix: /usr/tce
     diffutils:
       buildable: false
       externals:

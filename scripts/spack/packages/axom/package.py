@@ -18,7 +18,7 @@ class Axom(BuiltinAxom):
     # bring over latest from axom recipe (delete when we update spack)
     def initconfig_hardware_entries(self):
         spec = self.spec
-        entries = super().initconfig_hardware_entries()
+        entries = super(BuiltinAxom, self).initconfig_hardware_entries()
 
         if "+cuda" in spec:
             entries.append(cmake_cache_option("ENABLE_CUDA", True))
@@ -79,7 +79,7 @@ class Axom(BuiltinAxom):
                 )
 
             # Additional libraries for TOSS4
-            hip_link_flags += " -L{0}/lib -Wl,-rpath,{0}/lib ".format(rocm_root)
+            hip_link_flags += " -L{0}/lib -Wl,-rpath,{0}/lib -L{0}/../lib -Wl,-rpath,{0}/../lib ".format(rocm_root)
             hip_link_flags += "-lamdhip64 -lhsakmt -lhsa-runtime64 -lamd_comgr "
 
             entries.append(cmake_cache_string("CMAKE_EXE_LINKER_FLAGS", hip_link_flags))
@@ -162,7 +162,7 @@ class Axom(BuiltinAxom):
 
     def initconfig_mpi_entries(self):
         spec = self.spec
-        entries = super().initconfig_mpi_entries()
+        entries = super(BuiltinAxom, self).initconfig_mpi_entries()
 
         if "+mpi" in spec:
             entries.append(cmake_cache_option("ENABLE_MPI", True))

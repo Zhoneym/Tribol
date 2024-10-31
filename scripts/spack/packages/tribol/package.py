@@ -235,6 +235,8 @@ class Tribol(CachedCMakePackage, CudaPackage, ROCmPackage):
             entries.append(cmake_cache_option("ENABLE_HIP", True))
 
             rocm_root = spec["hip"].prefix
+            if not spec.satisfies("^hip@6.0.0:"):
+                rocm_root = "{0}/..".format(rocm_root)
             entries.append(cmake_cache_path("ROCM_PATH", rocm_root))
 
             hip_link_flags = ""
@@ -256,7 +258,7 @@ class Tribol(CachedCMakePackage, CudaPackage, ROCmPackage):
             if "+fortran" in spec and self.is_fortran_compiler("amdflang"):
                 hip_link_flags += "-Wl,--disable-new-dtags "
 
-                hip_link_flags += " -L{0}/lib -Wl,-rpath,{0}/lib ".format(rocm_root)
+                hip_link_flags += "-L{0}/lib -Wl,-rpath,{0}/lib ".format(rocm_root)
                 hip_link_flags += "-lflang -lflangrti -lompstub "
 
             # Remove extra link library for crayftn
@@ -266,7 +268,9 @@ class Tribol(CachedCMakePackage, CudaPackage, ROCmPackage):
                 )
 
             # Additional libraries for TOSS4
-            hip_link_flags += " -L{0}/lib -Wl,-rpath,{0}/lib".format(rocm_root)
+            hip_link_flags += "-L{0}/lib -Wl,-rpath,{0}/lib ".format(rocm_root)
+            if not spec.satisfies("^hip@6.0.0:"):
+                hip_link_flags += "-L{0}/hip/lib -Wl,-rpath,{0}/hip/lib ".format(rocm_root)
             hip_link_flags += "-lamdhip64 -lhsakmt -lhsa-runtime64 -lamd_comgr "
 
             entries.append(cmake_cache_string("CMAKE_EXE_LINKER_FLAGS", hip_link_flags))
@@ -326,16 +330,20 @@ class Tribol(CachedCMakePackage, CudaPackage, ROCmPackage):
         entries = super(Tribol, self).initconfig_mpi_entries()
 
         entries.append(cmake_cache_option("ENABLE_MPI", True))
-        if spec['mpi'].name == 'spectrum-mpi':
-            entries.append(cmake_cache_string("BLT_MPI_COMMAND_APPEND",
-                                              "mpibind"))
+        if spec["mpi"].name == "spectrum-mpi":
+            entries.append(cmake_cache_string("BLT_MPI_COMMAND_APPEND", "mpibind"))
 
         # Replace /usr/bin/srun path with srun flux wrapper path on TOSS 4
-        if 'toss_4' in self._get_sys_type(spec):
+        # TODO: Remove this logic by adding `using_flux` case in
+        #  spack/lib/spack/spack/build_systems/cached_cmake.py:196 and remove hard-coded
+        #  path to srun in same file.
+        if "toss_4" in self._get_sys_type(spec):
             srun_wrapper = which_string("srun")
-            mpi_exec_index = [index for index,entry in enumerate(entries)
-                                                  if "MPIEXEC_EXECUTABLE" in entry]
-            del entries[mpi_exec_index[0]]
+            mpi_exec_index = [
+                index for index, entry in enumerate(entries) if "MPIEXEC_EXECUTABLE" in entry
+            ]
+            if mpi_exec_index:
+                del entries[mpi_exec_index[0]]
             entries.append(cmake_cache_path("MPIEXEC_EXECUTABLE", srun_wrapper))
 
         return entries

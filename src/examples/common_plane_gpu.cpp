@@ -386,8 +386,8 @@ int runExample(int num_elems_1d)
   tribol::RealT bottom_max_force = bottom_force.Max();
   std::cout << "Bottom max force: " << bottom_max_force << std::endl;
 
-  // MFEM verification fails with this call on CUDA
-  #ifndef TRIBOL_USE_CUDA
+  // MFEM verification fails with this call on CUDA/HIP
+  #ifdef TRIBOL_USE_HOST
   tribol::RealT top_min_force = top_force.Min();
   std::cout << "Top min force: " << top_min_force << std::endl;
   
