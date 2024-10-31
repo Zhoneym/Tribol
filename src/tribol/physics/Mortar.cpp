@@ -422,6 +422,7 @@ int ApplyNormal< SINGLE_MORTAR, LAGRANGE_MULTIPLIER >( CouplingScheme* cs )
       algorithm::transpose<MemorySpace::Dynamic>(nonmortarX_barT, nonmortarX_bar);
 
       // construct array of polygon overlap vertex coordinates
+      // TODO: get rid of this copy
       ArrayT<RealT, 2> overlapX(plane.m_numPolyVert, dim);
       for (IndexT i{0}; i < plane.m_numPolyVert; ++i)
       {
