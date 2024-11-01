@@ -57,9 +57,7 @@ set(ENABLE_MPI ON CACHE BOOL "")
 # Hardware
 #------------------------------------------------------------------------------
 
-# this needs to be off until MFEM TPL is build with openmp
-#set(ENABLE_OPENMP ON CACHE BOOL "")
-set(ENABLE_OPENMP OFF CACHE BOOL "")
+set(ENABLE_OPENMP ON CACHE BOOL "")
 
 #------------------------------------------------------------------------------
 # Options

@@ -103,13 +103,15 @@ double runExample(int num_elems_1d)
       break;
 #endif
     default:
-#ifdef TRIBOL_USE_OPENMP
+#if defined(TRIBOL_USE_OPENMP) && defined(MFEM_USE_OPENMP)
       if (EXEC == ExecutionMode::OpenMP)
       {
         device.Configure("omp");
       }
       else
 #endif
+      // NOTE: if we specify OpenMP on this problem but MFEM doesn't support
+      // OpenMP, we can just do all our MFEM work without it
       {
         device.Configure("cpu");
       }
