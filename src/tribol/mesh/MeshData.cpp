@@ -458,7 +458,7 @@ bool MeshData::computeFaceData(ExecutionMode exec_mode)
         if (mag >= nrml_mag_tol) {
           inv_mag = 1.0 / mag;
         } else {
-          face_data_ok[0] = false;
+          face_data_ok[0] = static_cast<IndexT>(false);
         }
         n[0][i] *= inv_mag;
         n[1][i] *= inv_mag;

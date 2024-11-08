@@ -458,6 +458,7 @@ TRIBOL_HOST_DEVICE bool PolyAreaCentroid( const RealT* const x,
                                           RealT& cX, RealT& cY, RealT& cZ )
 {
 #ifdef TRIBOL_USE_HOST
+   SLIC_ERROR_IF(dim != 3, "PolyAreaCentroid: Only compatible with dim = 3.")
    SLIC_ERROR_IF(numVert==0, "PolyAreaCentroid: numVert = 0.");
 #endif
    if (numVert == 0)

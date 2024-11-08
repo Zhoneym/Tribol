@@ -137,7 +137,7 @@ public:
   /**
    * @brief Returns a reference to the element
    * 
-   * @note Calls SLIC_ERROR_ROOT_IF macro if element doesn't exist
+   * @note Calls SLIC_ERROR_IF macro if element doesn't exist
    * 
    * @param id Integer identifier for element
    * @return Reference to element
@@ -145,7 +145,7 @@ public:
   T& getData(IndexT id)
   {
     auto data_it = data_map_.find(id);
-    SLIC_ERROR_ROOT_IF(data_it == data_map_.end(),
+    SLIC_ERROR_IF(data_it == data_map_.end(),
       axom::fmt::format("No data exists for id = {}.", id));
     return data_it->second;
   }
