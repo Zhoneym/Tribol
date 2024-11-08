@@ -1150,28 +1150,25 @@ void CouplingScheme::performBinning()
 {
    // Find the interacting pairs for this coupling scheme. Will not use
    // binning if setInterfacePairs has been called.
-   if (!this->m_nullMeshes)
+   if( !this->hasFixedBinning() ) 
    {
-      if( !this->hasFixedBinning() ) 
+      // create interface pairs based on allocator id
+      m_interface_pairs = ArrayT<InterfacePair>(0, 0, m_allocator_id);
+
+      InterfacePairFinder finder(this);
+      finder.initialize();
+      finder.findInterfacePairs();
+
+      // For Cartesian binning, we only need to compute the binning once
+      if(this->getBinningMethod() == BINNING_CARTESIAN_PRODUCT)
       {
-         // create interface pairs based on allocator id
-         m_interface_pairs = ArrayT<InterfacePair>(0, 0, m_allocator_id);
-
-         InterfacePairFinder finder(this);
-         finder.initialize();
-         finder.findInterfacePairs();
-
-         // For Cartesian binning, we only need to compute the binning once
-         if(this->getBinningMethod() == BINNING_CARTESIAN_PRODUCT)
-         {
-            this->setFixedBinning(true);
-         }
-
-         // set fixed binning depending on contact case, 
-         // e.g. NO_SLIDING
-         this->setFixedBinningPerCase();
+         this->setFixedBinning(true);
       }
-   } // end if-non-null meshes
+
+      // set fixed binning depending on contact case, 
+      // e.g. NO_SLIDING
+      this->setFixedBinningPerCase();
+   }
    return;
 }
 
@@ -1926,8 +1923,8 @@ void CouplingScheme::updatePairReportingData( const FaceGeomError face_error )
 //------------------------------------------------------------------------------
 void CouplingScheme::printPairReportingData()
 {
-   SLIC_DEBUG(this->getNumActivePairs()*100./getInterfacePairs().size() << "% of binned interface " <<
-              "pairs are active contact candidates.");
+   SLIC_DEBUG_IF(getInterfacePairs().size() > 0, this->getNumActivePairs()*100./getInterfacePairs().size() << 
+                 "% of binned interface pairs are active contact candidates.");
 
    SLIC_DEBUG_IF(this->m_pairReportingData.numBadOrientation>0,
                  "Number of bad orientations is " << this->m_pairReportingData.numBadOrientation <<

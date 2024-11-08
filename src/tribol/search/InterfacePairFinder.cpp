@@ -749,7 +749,6 @@ InterfacePairFinder::InterfacePairFinder(CouplingScheme* cs)
 {
    SLIC_ASSERT_MSG(cs != nullptr, "Coupling scheme was invalid (null pointer)");
    const int dim = m_coupling_scheme->spatialDimension();
-   axom::slic::flushStreams();
    m_search = nullptr;
 
    if (isOnDevice(cs->getExecutionMode()) && cs->getBinningMethod() == BINNING_GRID)
@@ -770,7 +769,7 @@ InterfacePairFinder::InterfacePairFinder(CouplingScheme* cs)
          m_search = new CartesianProduct<3>(m_coupling_scheme);
          break;
       default:
-         SLIC_ERROR("Invalid dimension: " << dim );
+         SLIC_ERROR_ROOT("Invalid dimension: " << dim );
          break;
       } // end of BINNING_CARTESIAN_PRODUCT dimension switch
       break;
@@ -785,7 +784,7 @@ InterfacePairFinder::InterfacePairFinder(CouplingScheme* cs)
          m_search = new GridSearch<3>(m_coupling_scheme);
          break;
       default:
-         SLIC_ERROR("Invalid dimension: " << dim );
+         SLIC_ERROR_ROOT("Invalid dimension: " << dim );
          break;
       } // end of BINNING_GRID dimension switch
       break;
@@ -815,7 +814,7 @@ InterfacePairFinder::InterfacePairFinder(CouplingScheme* cs)
                break;
             #endif
             default:
-               SLIC_ERROR("Invalid execution mode.");
+               SLIC_ERROR_ROOT("Invalid execution mode.");
                break;
          }
          break;
@@ -841,17 +840,17 @@ InterfacePairFinder::InterfacePairFinder(CouplingScheme* cs)
                break;
             #endif
             default:
-               SLIC_ERROR("Invalid execution mode.");
+               SLIC_ERROR_ROOT("Invalid execution mode.");
                break;
          }
          break;
       default:
-         SLIC_ERROR("Invalid dimension: " << dim );
+         SLIC_ERROR_ROOT("Invalid dimension: " << dim );
          break;
       } // end of BINNING_BVH dimension switch
       break;
    default:
-      SLIC_ERROR("Invalid binning method: " << cs->getBinningMethod() );
+      SLIC_ERROR_ROOT("Invalid binning method: " << cs->getBinningMethod() );
       break;
    }  // end of binning method switch
 }
