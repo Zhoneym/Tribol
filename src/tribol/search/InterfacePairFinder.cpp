@@ -241,7 +241,7 @@ public:
       [mesh1NumElems, mesh2NumElems, is_symm, isProximate, mesh1, mesh2, cmode, 
         pCount, auto_contact_check] TRIBOL_HOST_DEVICE (IndexT i)
       {
-        IndexT fromIdx = i / mesh1NumElems;
+        IndexT fromIdx = i / mesh2NumElems;
         IndexT toIdx = i % mesh2NumElems;
         if (is_symm)
         {
