@@ -280,7 +280,7 @@ public:
           return;
         }
         
-        IndexT fromIdx = i / mesh1NumElems;
+        IndexT fromIdx = i / mesh2NumElems;
         IndexT toIdx = i % mesh2NumElems;
         if (is_symm)
         {
