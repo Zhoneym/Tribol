@@ -357,6 +357,14 @@ public:
 
     m_coupling_scheme->getInterfacePairs().clear();
 
+    // if either mesh is empty, don't initialize because...
+    // 1) there won't be any pairs
+    // 2) there is some division by the number of elements below
+    if (m_mesh1.numberOfElements() == 0 || m_mesh2.numberOfElements() == 0)
+    {
+      return;
+    }
+
     // Find the bounding boxes of the elements in the first mesh
     // Store them in an array for efficient reuse
     m_gridBBox.clear();
