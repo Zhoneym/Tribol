@@ -24,6 +24,11 @@ Changelog](http://keepachangelog.com/en/1.0.0/).
 - Added computational geometry tests testing the maximum allowable interpen when using auto contact.
 - API function to set the timestep interpenetration factor as percentage of element thickness used
   to trigger a timestep vote.
+- Introduced concepts of MemorySpace and ExecutionMode to enable parallel loop execution on different
+  programming models. These concepts map to Tribol's integration with Umpire and RAJA, respectively.
+- Added support and testing for the common plane algorithm with CUDA and HIP.
+- Added bounding volume hierarchy coarse binning algorithm with CUDA/HIP support.
+
 
 ### Changed
 - Return negative timestep vote for non-null meshes with null velocity pointers.
@@ -44,6 +49,17 @@ Changelog](http://keepachangelog.com/en/1.0.0/).
   geometry issue.
 - Changed `setContactPenFrac()` to `setAutoContactPenScale()`, which better describes when and
   how this scale factor is used.
+- Deprecated `tribol::initialize()` in favor of setting dimension and MPI communicator on the
+  coupling scheme. New method `tribol::setMPIComm()` allows setting the communicator.
+- Moved parameters from a (global) singleton to a per-coupling scheme struct. As a result,
+  `tribol::setAutoContactPenScale()`, `tribol::setTimestepPenFrac()`, `tribol::setTimestepScale()`,
+  `tribol::setContactAreaFrac()`, `tribol::setPlotCycleIncrement()`, `tribol::setPlotOptions()`,
+  `tribol::setOutputDirectory()`, and `tribol::enableTimestepVote()` now require a coupling scheme
+  in the API function.
+- `tribol::registerMesh()` now contains an optional `tribol::MemorySpace` argument that describes
+  what device the mesh pointers reside on.
+- `tribol::registerCouplingScheme()` now contains an optional `tribol::ExecutionMode` argument
+  that provides a suggested programming model to execute parallel loops.
   
 ### Fixed
 - Allow null velocity and response pointers for various use cases
