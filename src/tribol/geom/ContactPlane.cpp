@@ -60,13 +60,13 @@ TRIBOL_HOST_DEVICE FaceGeomError CheckInterfacePair( InterfacePair& pair,
         ContactPlane3D cpTemp( &pair, params.overlap_area_frac, interpenOverlap, intermediatePlane);
         FaceGeomError face_err = CheckFacePair( cpTemp, mesh1, mesh2, params, full );
 
-#ifdef TRIBOL_USE_HOST
-        SLIC_DEBUG("face_err: " << face_err );
-#endif
 
         if (face_err != NO_FACE_GEOM_ERROR)
         {
-          isInteracting = false;
+           isInteracting = false;
+#ifdef TRIBOL_USE_HOST
+           SLIC_DEBUG("face_err: " << face_err );
+#endif
         }
         else if (cpTemp.m_inContact)
         {
