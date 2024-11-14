@@ -26,7 +26,7 @@ Changelog](http://keepachangelog.com/en/1.0.0/).
   to trigger a timestep vote.
 - Introduced concepts of MemorySpace and ExecutionMode to enable parallel loop execution on different
   programming models. These concepts map to Tribol's integration with Umpire and RAJA, respectively.
-- Added support and testing for the common plane algorithm with CUDA and HIP.
+- Added support and testing for the common plane algorithm with CUDA, HIP, and OpenMP.
 - Added bounding volume hierarchy coarse binning algorithm with CUDA/HIP support.
 
 
