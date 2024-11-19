@@ -79,7 +79,7 @@ TRIBOL_HOST_DEVICE void EvalBasis( const RealT* const x,
    }
    else if (numPoints == 2)
    {
-      SegmentBasis( x, pX, pY, numPoints, vertexId, phi );
+      SegmentBasis( x, pX, pY, vertexId, phi );
    }
    else
    {
@@ -93,26 +93,24 @@ TRIBOL_HOST_DEVICE void EvalBasis( const RealT* const x,
 //------------------------------------------------------------------------------
 TRIBOL_HOST_DEVICE void SegmentBasis( const RealT* const x, 
                                       const RealT pX, const RealT pY,
-                                      const int numPoints, const int vertexId, 
-                                      RealT& phi )
+                                      const int vertexId, RealT& phi )
 {
 #ifdef TRIBOL_USE_HOST
-    SLIC_ERROR_IF(numPoints != 2, "SegmentBasis: numPoints is " << numPoints <<
-                  " but should be 2.");
-
     // note, vertexId is the index, 0 or 1.
-    SLIC_ERROR_IF(vertexId > numPoints-1, "SegmentBasis: vertexId is " << vertexId << 
+    SLIC_ERROR_IF(vertexId != 0 && vertexId != 1, "SegmentBasis: vertexId is " << vertexId << 
                   " but should be 0 or 1.");
 #endif
 
+   const int dim=2;
+
    // compute length of segment
-   RealT vx = x[numPoints*1] - x[numPoints*0];
-   RealT vy = x[numPoints*1+1] - x[numPoints*0+1];
+   RealT vx = x[dim*1]   - x[dim*0];
+   RealT vy = x[dim*1+1] - x[dim*0+1];
    RealT lambda = magnitude( vx, vy );
 
    // compute the magnitude of the vector <pX,pY> - <x[vertexId],y[vertexId]>
-   RealT wx = pX - x[ numPoints*vertexId ];
-   RealT wy = pY - x[ numPoints*vertexId+1 ];
+   RealT wx = pX - x[ dim*vertexId ];
+   RealT wy = pY - x[ dim*vertexId+1 ];
 
    RealT magW = magnitude( wx, wy );
 
