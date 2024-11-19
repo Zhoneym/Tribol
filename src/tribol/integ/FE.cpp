@@ -126,7 +126,8 @@ TRIBOL_HOST_DEVICE void SegmentBasis( const RealT* const x,
    //   SLIC_INFO("(x0,y0) and (x1,y1): " << "(" << x[0] << ", " << x[1] << "), " << "(" << x[2] << ", " << x[3] << ").");
    //   SLIC_INFO("(px,py): " << "(" << pX << ", " << pY << ")");
    //}
-   SLIC_WARNING_IF(phi > 1.0 || phi < 0.0, "SegmentBasis: phi is " << phi << " not between 0. and 1." );
+   SLIC_WARNING_IF(phi > 1.0 || phi < 0.0, "SegmentBasis: phi is " << phi << 
+                   " not between 0. and 1 for vertex " << vertexId << "." );
 
    return;
 }
