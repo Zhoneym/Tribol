@@ -56,34 +56,37 @@ TRIBOL_HOST_DEVICE void EvalWeakFormIntegral< COMMON_PLANE, SINGLE_POINT >
    // project the overlap centroid to each face
    if (elem.dim == 3)
    {
-      // TODO we should probably project in the direction of the overlap normal
-      // As the faces become less coplanar we lose conservation of angular momentum
+      // FIXME - ProjectPointToPlane is not correct routine. For that to work we must project
+      // in the direction of the planes normal. Here, we want to project in the direction of the overlap 
+      // normal onto the plane. Consider using LinePlaneIntersection()
+      // project integration point in direction of overlap normal to each face
       ProjectPointToPlane( cx[0], cx[1], cx[2],
-                           elem.faceNormal1[0],
-                           elem.faceNormal1[1],
-                           elem.faceNormal1[2],
+                           elem.overlapNormal[0],
+                           elem.overlapNormal[1],
+                           elem.overlapNormal[2],
                            cxf1[0], cxf1[1], cxf1[2],
                            cxProj1[0], cxProj1[1], cxProj1[2] ); 
 
       ProjectPointToPlane( cx[0], cx[1], cx[2],
-                           elem.faceNormal2[0],
-                           elem.faceNormal2[1],
-                           elem.faceNormal2[2],
+                           elem.overlapNormal[0],
+                           elem.overlapNormal[1],
+                           elem.overlapNormal[2],
                            cxf2[0], cxf2[1], cxf2[2],
                            cxProj2[0], cxProj2[1], cxProj2[2] ); 
    } 
    else
    {
-      // TODO we should probably project in the direction of the overlap normal
-      // As the faces become less coplanar we lose conservation of angular momentum
+      // FIXME ProjectPointToSegment may not be the correct routine since we aren't projecting in 
+      // the direction of the segment normal. 
+      // project integration point in direction of overlap normal to each edge
       ProjectPointToSegment( cx[0], cx[1], 
-                             elem.faceNormal1[0],
-                             elem.faceNormal1[1],
+                             elem.overlapNormal[0],
+                             elem.overlapNormal[1],
                              cxf1[0], cxf1[1],
                              cxProj1[0], cxProj1[1] );
       ProjectPointToSegment( cx[0], cx[1], 
-                             elem.faceNormal2[0],
-                             elem.faceNormal2[1],
+                             elem.overlapNormal[0],
+                             elem.overlapNormal[1],
                              cxf2[0], cxf2[1],
                              cxProj2[0], cxProj2[1] );
    }
