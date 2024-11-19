@@ -38,15 +38,15 @@ TRIBOL_HOST_DEVICE void EvalWeakFormIntegral< COMMON_PLANE, SINGLE_POINT >
                         cx[0], cx[1], cx[2] );
    }
    // debug
-   std::cout << "Integration point: " << cx[0] << ", " << cx[1] << std::endl;
+   //std::cout << "Integration point: " << cx[0] << ", " << cx[1] << std::endl;
 
    // debug
-   std::cout << "Overlap area: " << elem.overlapArea << std::endl;
-   std::cout << "Overlap coords in 2D" << std::endl;
-   for (int i=0; i<elem.numPolyVert; ++i)
-   {
-      std::cout << elem.overlapCoords[elem.dim*i] << ", " << elem.overlapCoords[elem.dim*i+1] << std::endl;
-   }
+   //std::cout << "Overlap area: " << elem.overlapArea << std::endl;
+   //std::cout << "Overlap coords in 2D" << std::endl;
+   //for (int i=0; i<elem.numPolyVert; ++i)
+   //{
+   //   std::cout << elem.overlapCoords[elem.dim*i] << ", " << elem.overlapCoords[elem.dim*i+1] << std::endl;
+   //}
 
    /////////////////////////////////////////////////////////////////////////
    //                                                                     //
@@ -87,18 +87,18 @@ TRIBOL_HOST_DEVICE void EvalWeakFormIntegral< COMMON_PLANE, SINGLE_POINT >
    else
    {
       // debug edge 1 vertices
-      for (int i=0; i<elem.m_mesh1->numberOfNodesPerElement(); ++i)
-      {
-         const int nodeId1 = elem.m_mesh1->getGlobalNodeId(elem.faceId1, i);
-         std::cout << "edge 1 vertex " << i << ": " << elem.m_mesh1->getPosition()[0][nodeId1] << ", " << elem.m_mesh1->getPosition()[1][nodeId1] << std::endl;
-      }
+      //for (int i=0; i<elem.m_mesh1->numberOfNodesPerElement(); ++i)
+      //{
+      //   const int nodeId1 = elem.m_mesh1->getGlobalNodeId(elem.faceId1, i);
+      //   std::cout << "edge 1 vertex " << i << ": " << elem.m_mesh1->getPosition()[0][nodeId1] << ", " << elem.m_mesh1->getPosition()[1][nodeId1] << std::endl;
+      //}
 
-      // debug edge 2 vertices
-      for (int i=0; i<elem.m_mesh1->numberOfNodesPerElement(); ++i)
-      {
-         const int nodeId2 = elem.m_mesh2->getGlobalNodeId(elem.faceId2, i);
-         std::cout << "edge 2 vertex " << i << ": " << elem.m_mesh2->getPosition()[0][nodeId2] << ", " << elem.m_mesh2->getPosition()[1][nodeId2] << std::endl;
-      }
+      //// debug edge 2 vertices
+      //for (int i=0; i<elem.m_mesh1->numberOfNodesPerElement(); ++i)
+      //{
+      //   const int nodeId2 = elem.m_mesh2->getGlobalNodeId(elem.faceId2, i);
+      //   std::cout << "edge 2 vertex " << i << ": " << elem.m_mesh2->getPosition()[0][nodeId2] << ", " << elem.m_mesh2->getPosition()[1][nodeId2] << std::endl;
+      //}
     
       // loop over number of nodes per edge (same for each mesh) and project nodes to common plane.
       // Can use the integration point as the point in the point-normal data.
