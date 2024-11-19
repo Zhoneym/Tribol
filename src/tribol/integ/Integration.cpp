@@ -41,6 +41,7 @@ TRIBOL_HOST_DEVICE void EvalWeakFormIntegral< COMMON_PLANE, SINGLE_POINT >
    std::cout << "Integration point: " << cx[0] << ", " << cx[1] << std::endl;
 
    // debug
+   std::cout << "Overlap area: " << elem.overlapArea << std::endl;
    std::cout << "Overlap coords in 2D" << std::endl;
    for (int i=0; i<elem.numPolyVert; ++i)
    {
