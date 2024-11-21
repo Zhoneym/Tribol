@@ -37,16 +37,25 @@ TRIBOL_HOST_DEVICE void EvalWeakFormIntegral< COMMON_PLANE, SINGLE_POINT >
       PolyAreaCentroid( elem.overlapCoords, elem.dim, elem.numPolyVert,
                         cx[0], cx[1], cx[2] );
    }
-   // debug
-   //std::cout << "Integration point: " << cx[0] << ", " << cx[1] << std::endl;
 
-   // debug
-   //std::cout << "Overlap area: " << elem.overlapArea << std::endl;
-   //std::cout << "Overlap coords in 2D" << std::endl;
-   //for (int i=0; i<elem.numPolyVert; ++i)
-   //{
-   //   std::cout << elem.overlapCoords[elem.dim*i] << ", " << elem.overlapCoords[elem.dim*i+1] << std::endl;
-   //}
+   // debug: leave commented out so we don't enter loop
+   {
+     //SLIC_DEBUG("Integration point: " << cx[0] << ", " << cx[1]);
+
+     //SLIC_DEBUG("Overlap area: " << elem.overlapArea);
+     //SLIC_DEBUG("Overlap coords: ");
+     //for (int i=0; i<elem.numPolyVert; ++i)
+     //{
+     //   if (elem.dim==2)
+     //   {
+     //      SLIC_DEBUG(elem.overlapCoords[elem.dim*i] << ", " << elem.overlapCoords[elem.dim*i+1]);
+     //   }
+     //   else
+     //   {
+     //      SLIC_DEBUG(elem.overlapCoords[elem.dim*i] << ", " << elem.overlapCoords[elem.dim*i+1] << ", " elem.overlapCoords[elem.dim*i+2]);
+     //   }
+     //}
+   }
 
    /////////////////////////////////////////////////////////////////////////
    //                                                                     //
@@ -77,29 +86,21 @@ TRIBOL_HOST_DEVICE void EvalWeakFormIntegral< COMMON_PLANE, SINGLE_POINT >
                               elem.overlapNormal[2], cx[0], cx[1], cx[2], projX1[elem.dim*i], projX1[elem.dim*i+1], 
                               projX1[elem.dim*i+2] );
 
+         SLIC_DEBUG("face 1 projected vertex " << i << ": " << elem.m_mesh1->getPosition()[0][nodeId1] << ", " << elem.m_mesh1->getPosition()[1][nodeId1] <<
+                      elem.m_mesh1->getPosition()[2][nodeId1]);
+
          const int nodeId2 = elem.m_mesh2->getGlobalNodeId(elem.faceId2, i);
          ProjectPointToPlane( elem.m_mesh2->getPosition()[0][nodeId2], elem.m_mesh2->getPosition()[1][nodeId2],
                               elem.m_mesh2->getPosition()[2][nodeId2], elem.overlapNormal[0], elem.overlapNormal[1],
                               elem.overlapNormal[2], cx[0], cx[1], cx[2], projX2[elem.dim*i], projX2[elem.dim*i+1], 
                               projX2[elem.dim*i+2] );
+
+         SLIC_DEBUG("face 2 projected vertex " << i << ": " << elem.m_mesh2->getPosition()[0][nodeId2] << ", " << elem.m_mesh2->getPosition()[1][nodeId2] <<
+                      elem.m_mesh2->getPosition[2][nodeId2]);
       }
    } 
    else
    {
-      // debug edge 1 vertices
-      //for (int i=0; i<elem.m_mesh1->numberOfNodesPerElement(); ++i)
-      //{
-      //   const int nodeId1 = elem.m_mesh1->getGlobalNodeId(elem.faceId1, i);
-      //   std::cout << "edge 1 vertex " << i << ": " << elem.m_mesh1->getPosition()[0][nodeId1] << ", " << elem.m_mesh1->getPosition()[1][nodeId1] << std::endl;
-      //}
-
-      //// debug edge 2 vertices
-      //for (int i=0; i<elem.m_mesh1->numberOfNodesPerElement(); ++i)
-      //{
-      //   const int nodeId2 = elem.m_mesh2->getGlobalNodeId(elem.faceId2, i);
-      //   std::cout << "edge 2 vertex " << i << ": " << elem.m_mesh2->getPosition()[0][nodeId2] << ", " << elem.m_mesh2->getPosition()[1][nodeId2] << std::endl;
-      //}
-    
       // loop over number of nodes per edge (same for each mesh) and project nodes to common plane.
       // Can use the integration point as the point in the point-normal data.
       for (int i=0; i<elem.m_mesh1->numberOfNodesPerElement(); ++i)
@@ -110,10 +111,14 @@ TRIBOL_HOST_DEVICE void EvalWeakFormIntegral< COMMON_PLANE, SINGLE_POINT >
                                 elem.overlapNormal[0], elem.overlapNormal[1], cx[0], cx[1], 
                                 projX1[elem.dim*i], projX1[elem.dim*i+1] );
 
+         SLIC_DEBUG("edge 1 projected vertex " << i << ": " << elem.m_mesh1->getPosition()[0][nodeId1] << ", " << elem.m_mesh1->getPosition()[1][nodeId1] );
+
          const int nodeId2 = elem.m_mesh2->getGlobalNodeId(elem.faceId2, i);
          ProjectPointToSegment( elem.m_mesh2->getPosition()[0][nodeId2], elem.m_mesh2->getPosition()[1][nodeId2],
                                 elem.overlapNormal[0], elem.overlapNormal[1], cx[0], cx[1], 
                                 projX2[elem.dim*i], projX2[elem.dim*i+1] );
+
+         SLIC_DEBUG("edge 2 projected vertex " << i << ": " << elem.m_mesh2->getPosition()[0][nodeId2] << ", " << elem.m_mesh2->getPosition()[1][nodeId2] );
       }
    }
 
