@@ -67,7 +67,7 @@ Changelog](http://keepachangelog.com/en/1.0.0/).
   zero face velocities.
 - Fixed computational geometry bug in 2D/3D common plane that was using face normals in projections
   instead of common plane normal.
-- Fixed bug in 2D segment-segment overlap calculation on common plane. The current configuration edge areas
+- Fixed bug in 2D segment-segment overlap calculation on common plane. The current configuration edge lengths
   were being used instead of the projected edges leading to false positives.
 
 ## [Version 0.1.0] - Release date 2023-04-21

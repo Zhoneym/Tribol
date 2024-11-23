@@ -302,7 +302,8 @@ TEST_F( CompGeomTest, should_produce_no_overlap )
    RealT xy1[dim*numVerts];
    RealT xy2[dim*numVerts];
 
-   // this geometry should NOT be in contact
+   // this geometry has two faces that have "passed through" one another, but
+   // don't have a positive area of overlap.
    xy1[0] = 0.324552;
    xy1[1] = 0.625596;
    xy1[2] = 0.16206;
@@ -377,7 +378,8 @@ TEST_F( CompGeomTest, coincident_vertices_full_overlap )
    RealT xy1[dim*numVerts];
    RealT xy2[dim*numVerts];
 
-   // this geometry should NOT be in contact
+   // this geometry is in contact with coincident vertices when
+   // projected onto the common plane.
    xy1[0] = 1.0;
    xy1[1] = 0.0;
    xy1[2] = 0.0;
@@ -456,7 +458,9 @@ TEST_F( CompGeomTest, coincident_vertex_no_overlap )
    RealT xy1[dim*numVerts];
    RealT xy2[dim*numVerts];
 
-   // this geometry should NOT be in contact
+   // this geometry has a pair of 'nearly' coincident vertices that should
+   // produce NO positive area of overlap. Note: the actual overlap is
+   // less than the contact area fraction set by tribol::setContactAreaFrac() below.
    xy1[0] = 1.0;
    xy1[1] = 0.0;
    xy1[2] = 0.0;
@@ -531,6 +535,10 @@ TEST_F( CompGeomTest, nearly_coincident_vertex_pos_overlap )
    RealT xy1[dim*numVerts];
    RealT xy2[dim*numVerts];
 
+   // This geometry has a face-pair with a set of 'nearly' coincident vertices, but a
+   // positive area of overlap that is greater than the contact area frac used in
+   // computing an overlap area threshold. As a result, this face-pair should be
+   // in contact
    xy1[0] = 1.0;
    xy1[1] = 0.0;
    xy1[2] = 0.0;
@@ -608,7 +616,7 @@ TEST_F( CompGeomTest, 2d_projections_1 )
    RealT xy1[dim*numVerts];
    RealT xy2[dim*numVerts];
 
-   // this geometry should be in contact
+   // this geometry should be in contact, testing projections
    xy1[0] = 0.75;
    xy1[1] = 0.;
    xy1[2] = 0.727322;
