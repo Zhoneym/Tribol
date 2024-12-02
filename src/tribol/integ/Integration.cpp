@@ -96,7 +96,7 @@ TRIBOL_HOST_DEVICE void EvalWeakFormIntegral< COMMON_PLANE, SINGLE_POINT >
                               projX2[elem.dim*i+2] );
 
          SLIC_DEBUG("face 2 projected vertex " << i << ": " << elem.m_mesh2->getPosition()[0][nodeId2] << ", " << elem.m_mesh2->getPosition()[1][nodeId2] <<
-                      elem.m_mesh2->getPosition[2][nodeId2]);
+                      elem.m_mesh2->getPosition()[2][nodeId2]);
       }
    } 
    else
